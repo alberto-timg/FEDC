@@ -7,6 +7,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 
 from django.views.generic import TemplateView, RedirectView, ListView, DetailView
 from django.shortcuts import get_object_or_404
@@ -187,10 +188,11 @@ class RefrescarBandejaRedirectView(RedirectView):
 
 		list_ = received_string.split('\r\n')
 		final_date = list_[1].split()
-		string_date = "{} {} {}".format(final_date[2], final_date[1], final_date[3])
-		datef = datetime.strptime(string_date, '%b %d %Y')
+		string_date = "{} {} {} 0:00AM".format(final_date[2], final_date[1], final_date[3])
+		datef = datetime.strptime(string_date, '%b %d %Y %H:%M%S%p')
+		aware_time = timezone.make_aware(datef)
 
-		return datef
+		return aware_time
 
 	def get_remisor(self, remisor_string):
 
